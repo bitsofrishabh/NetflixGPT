@@ -7,12 +7,18 @@ import { addUser, removeUser } from "../utils/userSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { LOGO } from "../utils/constants";
+import { toggleGPTSearchView } from "../utils/GPTSlice";
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const handleGPTSearch = () => {
+    dispatch(toggleGPTSearchView());
+  };
+
   const user = useSelector((store) => store.user);
+  const showGPTSearch = useSelector((store) => store.gpt.showGPTSearch);
 
   const handleSignOut = () => {
     signOut(auth)
@@ -48,6 +54,12 @@ const Header = () => {
       <img className="w-44" src={LOGO} alt="Netflix Logo" />
       {user && (
         <div className="flex">
+          <button
+            className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 mr-3 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+            onClick={handleGPTSearch}
+          >
+          {showGPTSearch?'Home Page':'GPT Search'}  
+          </button>
           <img className="w-12 " src={user?.photoURL} alt="Netflix Logo" />
           <button className="font-bold px-2 text-white" onClick={handleSignOut}>
             Sign out

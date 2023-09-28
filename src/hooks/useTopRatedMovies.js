@@ -1,5 +1,5 @@
 import { API_OPTIONS } from "../utils/constants";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { addTopRatedMovies } from "../utils/moviesSlice";
 import { useEffect } from "react";
 
@@ -7,6 +7,7 @@ import { useEffect } from "react";
 //hooks are just javascript functions
 const useTopRatedMovies = () => {
   const dispatch = useDispatch();
+  const topRatedMovies = useSelector((store) => store.movies.topRatedMovies);
 
   const getMoviesList = async () => {
     const data = await fetch(
@@ -14,12 +15,11 @@ const useTopRatedMovies = () => {
       API_OPTIONS
     );
     const response = await data.json();
-    console.log("response:", response.results);
     dispatch(addTopRatedMovies(response.results));
   };
 
   useEffect(() => {
-    getMoviesList();
+    if (!topRatedMovies) getMoviesList();
   }, []);
 };
 

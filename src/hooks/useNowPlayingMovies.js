@@ -1,5 +1,5 @@
 import { API_OPTIONS } from "../utils/constants";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addNowPlayingMovies } from "../utils/moviesSlice";
 import { useEffect } from "react";
 
@@ -7,6 +7,9 @@ import { useEffect } from "react";
 //hooks are just javascript functions
 const useNowPlayingMovies = () => {
   const dispatch = useDispatch();
+  const nowPlayingMovies = useSelector(
+    (store) => store.movies.nowPlayingMovies
+  );
 
   const getMoviesList = async () => {
     const data = await fetch(
@@ -14,12 +17,12 @@ const useNowPlayingMovies = () => {
       API_OPTIONS
     );
     const response = await data.json();
-    console.log("response:", response.results);
-    dispatch(addNowPlayingMovies(response.results));
+    const shuffledResponse = response.results.sort(() => Math.random() - 0.5);
+    dispatch(addNowPlayingMovies(shuffledResponse));
   };
 
   useEffect(() => {
-    getMoviesList();
+    if (!nowPlayingMovies) getMoviesList();
   }, []);
 };
 
